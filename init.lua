@@ -1,4 +1,5 @@
-vim.cmd("colorscheme tokyonight")
+--On a fresh Nvim install, first run git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+--Then open Nvim, and run PackerInstall
 
 require('packer').startup(function(use)
   use "williamboman/mason.nvim"
@@ -22,6 +23,7 @@ require('packer').startup(function(use)
 require('mason').setup()
 require('mason-lspconfig').setup()
 
+vim.cmd("colorscheme tokyonight")
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
