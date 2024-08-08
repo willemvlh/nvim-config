@@ -17,6 +17,10 @@ require('packer').startup(function(use)
   use 'windwp/nvim-autopairs'
   use 'nvim-tree/nvim-tree.lua'
   use "folke/tokyonight.nvim"
+  use {'nvim-telescope/telescope.nvim', tag = '0.1.8', requires = {
+        {'nvim-lua/plenary.nvim'}
+    }
+  }
   end
   )
 
@@ -28,6 +32,18 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 vim.wo.number = true
+
+-- Enable filetype detection, plugins, and indentation
+vim.cmd('filetype plugin indent on')
+
+-- Show existing tab with 4 spaces width
+vim.o.tabstop = 4
+
+-- When indenting with '>', use 4 spaces width
+vim.o.shiftwidth = 4
+
+-- On pressing tab, insert 4 spaces
+vim.o.expandtab = true
 
   -- Set up nvim-cmp.
   local cmp = require'cmp'
@@ -50,7 +66,7 @@ vim.wo.number = true
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
-	  ['<C-g>'] = cmp.mapping.complete(),
+          ['<C-g>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.abort(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     }),
@@ -98,7 +114,17 @@ vim.wo.number = true
     capabilities = capabilities
   }
   require('lspconfig')['tsserver'].setup {
-	capabilities = capabilities
+        capabilities = capabilities
+  }
+  require('lspconfig')['powershell_es'].setup {
+      capabilities = capabilities
+  }
+  require('lspconfig')['html'].setup {
+      capabilities = capabilities
+  }
+  require('lspconfig')['clangd'].setup {
+      capabilities = capabilities,
+      cmd = {'clangd', '--compile-commands-dir=%/..'}
   }
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -126,8 +152,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-	vim.keymap.set('i', '<C-k>', vim.lsp.buf.hover, opts)
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        vim.keymap.set('i', '<C-k>', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
     --vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
     vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
     vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
@@ -144,6 +170,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+
 require('nvim-tree').setup()
 
 vim.cmd[[
@@ -152,3 +179,11 @@ vim.cmd[[
   autocmd VimEnter * NvimTreeOpen
   augroup END
 ]]
+
+vim.api.nvim_set_option("clipboard", "unnamedplus")
+
+vim.keymap.set('n', '<Tab>', ':bnext<CR>', {noremap = true, silent = true})
+vim.keymap.set('n', '<S-Tab>', ':bprev<CR>', {noremap = true, silent = true})
+
+vim.o.ignorecase = true
+vim.o.smartcase = true
