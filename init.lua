@@ -1,29 +1,4 @@
---On a fresh Nvim install, first run git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
---Then open Nvim, and run PackerInstall
-
-require('packer').startup(function(use)
-  use "williamboman/mason.nvim"
-  use "williamboman/mason-lspconfig.nvim"
-  use 'wbthomason/packer.nvim'
-  use 'neovim/nvim-lspconfig'
-  use 'jose-elias-alvarez/null-ls.nvim'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-vsnip'
-  use 'hrsh7th/vim-vsnip'
-  use 'windwp/nvim-autopairs'
-  use 'nvim-tree/nvim-tree.lua'
-  use "folke/tokyonight.nvim"
-  use {'nvim-telescope/telescope.nvim', tag = '0.1.8', requires = {
-        {'nvim-lua/plenary.nvim'}
-    }
-  }
-  end
-  )
-
+require("config.lazy")
 require('mason').setup()
 require('mason-lspconfig').setup()
 
@@ -37,10 +12,10 @@ vim.wo.number = true
 vim.cmd('filetype plugin indent on')
 
 -- Show existing tab with 4 spaces width
-vim.o.tabstop = 4
+vim.o.tabstop = 2
 
 -- When indenting with '>', use 4 spaces width
-vim.o.shiftwidth = 4
+vim.o.shiftwidth = 2
 
 -- On pressing tab, insert 4 spaces
 vim.o.expandtab = true
@@ -113,7 +88,7 @@ vim.o.expandtab = true
   require('lspconfig')['pyright'].setup {
     capabilities = capabilities
   }
-  require('lspconfig')['tsserver'].setup {
+  require('lspconfig')['ts_ls'].setup {
         capabilities = capabilities
   }
   require('lspconfig')['powershell_es'].setup {
