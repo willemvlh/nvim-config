@@ -11,9 +11,10 @@ return {
 	'hrsh7th/cmp-vsnip',
 	'hrsh7th/vim-vsnip',
 	'windwp/nvim-autopairs',
-	'nvim-tree/nvim-tree.lua',
+  {'nvim-tree/nvim-tree.lua', lazy = false, priority=80},
 	"folke/tokyonight.nvim",
-	{"nvim-telescope/telescope.nvim", tag = '0.1.8', requires = {{'nvim-lua/plenary.nvim'}}}
+	{"nvim-telescope/telescope.nvim", tag = '0.1.8', requires = {{'nvim-lua/plenary.nvim'}}},
+  "nvim-tree/nvim-web-devicons"
 
 }
    
