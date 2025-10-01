@@ -1,5 +1,5 @@
 return {
-	"williamboman/mason.nvim",
+  {"williamboman/mason.nvim", opts = {}},
 	"williamboman/mason-lspconfig.nvim",
 	'neovim/nvim-lspconfig',
 	'jose-elias-alvarez/null-ls.nvim',
