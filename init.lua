@@ -1,13 +1,15 @@
 require("config.lazy")
 require('mason').setup()
 require('mason-lspconfig').setup()
+require('nvim-tree').setup()
 
-vim.cmd("colorscheme tokyonight")
+vim.g.lightline = {colorscheme = "wombat"}
+vim.cmd("colorscheme catppuccin-frappe")
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 vim.wo.number = true
-
+vim.o.showmode = false
 -- Enable filetype detection, plugins, and indentation
 vim.cmd('filetype plugin indent on')
 
@@ -139,20 +141,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 
-require('nvim-tree').setup()
-
-vim.cmd[[
-  augroup AutoNvimTree
-  autocmd!
-  autocmd VimEnter * NvimTreeOpen
-  augroup END
-]]
-
 vim.api.nvim_set_option("clipboard", "unnamedplus")
 
 vim.keymap.set('n', '<Tab>', ':bnext<CR>', {noremap = true, silent = true})
 vim.keymap.set('n', '<S-Tab>', ':bprev<CR>', {noremap = true, silent = true})
 vim.keymap.set('n', '<C-s>', ':Telescope live_grep<CR>')
+vim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>', {noremap = true})
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
