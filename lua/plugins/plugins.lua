@@ -13,9 +13,11 @@ return {
 	'windwp/nvim-autopairs',
   {'nvim-tree/nvim-tree.lua', lazy = false, priority=80},
 	"folke/tokyonight.nvim",
+	"catppuccin/nvim",
 	{"nvim-telescope/telescope.nvim", tag = '0.1.8', requires = {{'nvim-lua/plenary.nvim'}}},
   "nvim-tree/nvim-web-devicons",
   "tpope/vim-endwise",
-  "rafamadriz/friendly-snippets"
+  "rafamadriz/friendly-snippets",
+  'itchyny/lightline.vim'
 }
    
