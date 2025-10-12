@@ -18,5 +18,16 @@ return {
   "nvim-tree/nvim-web-devicons",
   "tpope/vim-endwise",
   "rafamadriz/friendly-snippets",
-  'itchyny/lightline.vim'
+  'itchyny/lightline.vim',
+  { 'akinsho/bufferline.nvim',       version = "*", dependencies = 'nvim-tree/nvim-web-devicons' },
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "suketa/nvim-dap-ruby"
+    },
+    config = function()
+      require("dap-ruby").setup()
+    end
+  },
+  { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } }
 }
