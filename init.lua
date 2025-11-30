@@ -1,15 +1,49 @@
 require("config.lazy")
 require('mason').setup()
 require('mason-lspconfig').setup()
-require('nvim-tree').setup()
+require('nvim-tree').setup({
+  filters = {
+    git_ignored = false
+  },
+  renderer = {
+    highlight_git = true,
+  }
+})
 
-vim.g.lightline = { colorscheme = "tokyonight" }
-vim.cmd("colorscheme tokyonight")
+vim.g.lightline = {
+  colorscheme = "tokyonight",
+  active = {
+    left = {
+      { "mode",     "paste" },
+      { "readonly", "relativepath", "modified" }
+    },
+    right = {
+      { "lineinfo" }, { "percent" }, { "filetype", "fileencoding" }
+    }
+  },
+  inactive = {
+    left = { { "relativepath", "modified" } },
+  }
+}
+vim.cmd("colorscheme tokyonight-night")
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#a8d2ff" })
+vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#6090cc" })
+vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#4070bb" })
+vim.api.nvim_set_hl(0, "CursorLine", { bg = "#1e1e1e" })
+vim.api.nvim_set_hl(0, "Comment", { fg = "#879999", italic = true })
+vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { fg = "#333333" })
+vim.api.nvim_set_hl(0, "NvimTreeGitFileIgnoredHL", { fg = "#aaaaaa", italic = true })
+vim.api.nvim_set_hl(0, "NvimTreeGitFileDirtyHL", { fg = "#ddbb44" })
+vim.api.nvim_set_hl(0, "", { bg = "#1e1e1e" })
+vim.api.nvim_set_hl(0, '@function.ruby', {bold = true})
+vim.api.nvim_set_hl(0, '@lsp.typemod.class.declaration.ruby', {bold = true})
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 vim.wo.number = true
 vim.o.showmode = false
+vim.o.winborder = "rounded"
+
 -- Enable filetype detection, plugins, and indentation
 vim.cmd('filetype plugin indent on')
 
@@ -21,8 +55,7 @@ vim.o.shiftwidth = 2
 
 -- On pressing tab, insert 4 spaces
 vim.o.expandtab = true
-
--- Set up nvim-cmp.
+vim.o.relativenumber = true
 local cmp = require 'cmp'
 
 cmp.setup({
@@ -136,6 +169,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function(data)
     -- Only open if it's a directory
@@ -149,13 +183,23 @@ vim.api.nvim_set_option("clipboard", "unnamedplus")
 
 vim.keymap.set('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<S-Tab>', ':bprev<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-s>', ':Telescope live_grep<CR>')
 vim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>', { noremap = true })
-vim.keymap.set('n', '<C-t>', ':belowright 15sp | term<CR>', { noremap = true })
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
+vim.keymap.set('t', '<Esc>', ':ToggleTerm<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers)
+vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files)
+vim.keymap.set('n', '<leader>fs', require('telescope.builtin').live_grep)
+vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string)
+vim.keymap.set('n', '<leader>fe', function ()
+  require('telescope.builtin').live_grep({glob_pattern = "!**/spec/**"})
+end)
+vim.keymap.set('n', '<leader>to', ':Neotest output-panel<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>ts', ':Neotest summary<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>tn', 'require("neotest").run.run()<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>tf', 'require("neotest").run.run(vim.fn.expand("%"))<CR>', { noremap = true })
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
 
 require("bufferline").setup {
   options = {
@@ -163,3 +207,30 @@ require("bufferline").setup {
     separator_style = "slant"
   }
 }
+
+
+require('nvim-treesitter.configs').setup {
+  highlight = {
+    enable = function(lang, buf)
+      return lang == "ruby"
+    end
+  }
+}
+
+require("toggleterm").setup {
+  size = function(term)
+    if term.direction == "horizontal" then
+      return 15
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.4
+    end
+  end,
+  open_mapping = [[<c-\>]] -- or { [[<c-\>]], [[<c-¥>]] } if you also use a Japanese keyboard.
+}
+
+vim.api.nvim_create_user_command("Test", function()
+  vim.cmd("Neotest output-panel")
+  vim.cmd("Neotest summary")
+  vim.cmd("Neotest run")
+end, {}
+)

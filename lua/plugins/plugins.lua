@@ -29,5 +29,31 @@ return {
       require("dap-ruby").setup()
     end
   },
-  { "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } }
+   {
+        "igorlfs/nvim-dap-view",
+        ---@module 'dap-view'
+        ---@type dapview.Config
+        opts = {},
+    },
+  { "nvim-treesitter/nvim-treesitter", branch = 'master',                                                  lazy = false, build = ":TSUpdate" },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "olimorris/neotest-rspec"
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-rspec")
+        }
+      })
+    end
+  },
+  { "github/copilot.vim" },
+  {'akinsho/toggleterm.nvim', version = "*", config = true},
+
 }
