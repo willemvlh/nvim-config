@@ -1,6 +1,3 @@
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 require("config.lazy")
 require('mason').setup()
 require('mason-lspconfig').setup()
@@ -12,7 +9,12 @@ require('nvim-tree').setup({
     highlight_git = true,
   }
 })
-
+local null_ls = require("null-ls")
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.rubyfmt,
+  },
+})
 vim.g.lightline = {
   colorscheme = "tokyonight",
   active = {
@@ -38,13 +40,15 @@ vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { fg = "#333333" })
 vim.api.nvim_set_hl(0, "NvimTreeGitFileIgnoredHL", { fg = "#aaaaaa", italic = true })
 vim.api.nvim_set_hl(0, "NvimTreeGitFileDirtyHL", { fg = "#ddbb44" })
 vim.api.nvim_set_hl(0, "", { bg = "#1e1e1e" })
-vim.api.nvim_set_hl(0, '@function.ruby', {bold = true})
-vim.api.nvim_set_hl(0, '@lsp.typemod.class.declaration.ruby', {bold = true})
-vim.opt.termguicolors = true
+vim.api.nvim_set_hl(0, '@function.ruby', { bold = true })
+vim.api.nvim_set_hl(0, '@lsp.typemod.class.declaration.ruby', { bold = true })
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.o.termguicolors = true
 vim.wo.number = true
 vim.o.showmode = false
 vim.o.winborder = "rounded"
-
+vim.o.autowriteall = true -- This makes sure modified buffers are saved when running an external command
 -- Enable filetype detection, plugins, and indentation
 vim.cmd('filetype plugin indent on')
 
@@ -164,8 +168,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    vim.keymap.set('n', '<space>f', function()
-      vim.lsp.buf.format { async = true }
+    vim.keymap.set('n', '<space>fm', function()
+      vim.lsp.buf.format { async = false }
     end, opts)
   end,
 })
@@ -184,20 +188,31 @@ vim.api.nvim_set_option("clipboard", "unnamedplus")
 
 vim.keymap.set('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<S-Tab>', ':bprev<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<F12>', ':bufdo bwipeout<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-k>', '<C-i>', { noremap = true, silent = true }) -- <c-i> is misinterpreted by terminal as <tab>
 vim.keymap.set('n', '<leader>t', ':NvimTreeToggle<CR>', { noremap = true })
-vim.keymap.set('t', '<Esc>', ':ToggleTerm<CR>', { noremap = true })
+vim.keymap.set('t', '<esc>', [[<C-\><C-n>]])
 vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers)
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files)
 vim.keymap.set('n', '<leader>fs', require('telescope.builtin').live_grep)
+vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags)
+vim.keymap.set('n', '<leader>fm', require('telescope.builtin').man_pages)
 vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string)
-vim.keymap.set('n', '<leader>fe', function ()
-  require('telescope.builtin').live_grep({glob_pattern = "!**/spec/**"})
+vim.keymap.set('n', '<leader>few', function()
+  require('telescope.builtin').grep_string({ glob_pattern = "!**/spec/**" })
+end)
+vim.keymap.set('n', '<leader>fe', function()
+  require('telescope.builtin').live_grep({ glob_pattern = "!**/spec/**" })
 end)
 vim.keymap.set('n', '<leader>to', ':Neotest output-panel<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>ts', ':Neotest summary<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>tn', 'require("neotest").run.run()<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>tf', 'require("neotest").run.run(vim.fn.expand("%"))<CR>', { noremap = true })
-
+vim.keymap.set('n', '<leader>l', function()
+  vim.o.relativenumber = not vim.o.relativenumber
+end)
+vim.keymap.set('n', ',', '^', { noremap = true })
+vim.keymap.set('n', '<leader>c', ':bdelete | blast<CR>', { noremap = true })
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
@@ -205,10 +220,12 @@ vim.o.smartcase = true
 require("bufferline").setup {
   options = {
     diagnostics = "nvim_lsp",
-    separator_style = "slant"
+    separator_style = "thin",
+    numbers = "buffer_id",
+    tab_size=11,
+    show_buffer_icons = false
   }
 }
-
 
 require('nvim-treesitter.configs').setup {
   highlight = {
@@ -219,15 +236,10 @@ require('nvim-treesitter.configs').setup {
 }
 
 require("toggleterm").setup {
-  size = function(term)
-    if term.direction == "horizontal" then
-      return 15
-    elseif term.direction == "vertical" then
-      return vim.o.columns * 0.4
-    end
-  end,
-  open_mapping = [[<c-\>]] -- or { [[<c-\>]], [[<c-¥>]] } if you also use a Japanese keyboard.
+  size = 15,
+  open_mapping = [[<F3>]] -- or { [[<c-\>]], [[<c-¥>]] } if you also use a Japanese keyboard.
 }
+
 
 vim.api.nvim_create_user_command("Test", function()
   vim.cmd("Neotest output-panel")
@@ -235,3 +247,25 @@ vim.api.nvim_create_user_command("Test", function()
   vim.cmd("Neotest run")
 end, {}
 )
+
+--Copilot
+--Use <C-J> to accept copilot suggestions
+vim.keymap.set('i', '<C-J>', 'copilot#Accept("\\<CR>")', {
+  expr = true,
+  replace_keycodes = false
+})
+vim.g.copilot_no_tab_map = true
+vim.g.copilot_proxy_strict_ssl = false
+
+
+vim.cmd("runtime macros/matchit.vim")
+
+local group = vim.api.nvim_create_augroup("RubyStuff", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = group,
+  pattern = "ruby",
+  callback = function()
+    vim.keymap.set('n', '<F2>', ':99TermExec cmd="bundle exec rspec %"<CR>', { noremap = true, silent = true })
+  end,
+})

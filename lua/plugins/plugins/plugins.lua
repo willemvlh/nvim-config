@@ -2,7 +2,7 @@ return {
   { "williamboman/mason.nvim", opts = {} },
   "williamboman/mason-lspconfig.nvim",
   'neovim/nvim-lspconfig',
-  'jose-elias-alvarez/null-ls.nvim',
+  'nvimtools/none-ls.nvim',
   'hrsh7th/cmp-nvim-lsp',
   'hrsh7th/cmp-buffer',
   'hrsh7th/cmp-path',
@@ -17,7 +17,6 @@ return {
   { "nvim-telescope/telescope.nvim", tag = '0.1.8', requires = { { 'nvim-lua/plenary.nvim' } } },
   "nvim-tree/nvim-web-devicons",
   "tpope/vim-endwise",
-  "andymass/vim-matchup",
   "rafamadriz/friendly-snippets",
   'itchyny/lightline.vim',
   { 'akinsho/bufferline.nvim',       version = "*", dependencies = 'nvim-tree/nvim-web-devicons' },
@@ -55,6 +54,5 @@ return {
     end
   },
   { "github/copilot.vim" },
-  {'akinsho/toggleterm.nvim', version = "*", config = true},
-
+  {'akinsho/toggleterm.nvim', version = "*", config = true}
 }
