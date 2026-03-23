@@ -1,3 +1,6 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 require("config.lazy")
 require('mason').setup()
 require('mason-lspconfig').setup()
@@ -37,8 +40,6 @@ vim.api.nvim_set_hl(0, "NvimTreeGitFileDirtyHL", { fg = "#ddbb44" })
 vim.api.nvim_set_hl(0, "", { bg = "#1e1e1e" })
 vim.api.nvim_set_hl(0, '@function.ruby', {bold = true})
 vim.api.nvim_set_hl(0, '@lsp.typemod.class.declaration.ruby', {bold = true})
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 vim.wo.number = true
 vim.o.showmode = false
